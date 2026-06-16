@@ -1,10 +1,10 @@
 # ── Core RAG dependencies ─────────────────────────────────────────────────
-sentence-transformers>=2.6.0
-faiss-cpu>=1.7.4
-numpy>=1.24.0
+sentence-transformers>=2.6.0,<3.0
+faiss-cpu>=1.7.4<2.0
+numpy>=1.24.0<2.0
 
 # ── Document loading ──────────────────────────────────────────────────────
-pymupdf>=1.23.0          # PDF (PyMuPDF / fitz)  — preferred
+pymupdf>=1.23.0,          # PDF (PyMuPDF / fitz)  — preferred
 pdfplumber>=0.10.0       # PDF fallback
 python-docx>=1.1.0       # DOCX
 
@@ -12,8 +12,9 @@ python-docx>=1.1.0       # DOCX
 nltk>=3.8.1              # sentence tokeniser
 
 # ── LLM generation (choose one) ──────────────────────────────────────────
-openai>=1.12.0           # OpenAI / compatible API
-# transformers>=4.38.0   # HuggingFace local models (uncomment if needed)
+openai>=1.12.0<       # OpenAI / compatible API
+# transformers>
+=4.38.0   # HuggingFace local models (uncomment if needed)
 # accelerate>=0.27.0     # device_map="auto" support
 
 # ── Evaluation (optional) ─────────────────────────────────────────────────
