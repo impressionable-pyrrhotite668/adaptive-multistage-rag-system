@@ -1,0 +1,56 @@
+[
+    {
+        "Query": "Q1",
+        "Method": "Baseline RAG",
+        "Retrieval Precision": 1.0,
+        "Context Relevance": 0.5714285714285714,
+        "Answer Faithfulness": 0.2,
+        "Answer Relevance": 0.0,
+        "Latency (s)": 122.1152534999419
+    },
+    {
+        "Query": "Q1",
+        "Method": "Adaptive RAG",
+        "Retrieval Precision": 1.0,
+        "Context Relevance": 0.5714285714285714,
+        "Answer Faithfulness": 0.14285714285714285,
+        "Answer Relevance": 0.0,
+        "Latency (s)": 14.142362599959597
+    },
+    {
+        "Query": "Q2",
+        "Method": "Baseline RAG",
+        "Retrieval Precision": 1.0,
+        "Context Relevance": 0.2857142857142857,
+        "Answer Faithfulness": 0.0,
+        "Answer Relevance": 0.0,
+        "Latency (s)": 7.535063900053501
+    },
+    {
+        "Query": "Q2",
+        "Method": "Adaptive RAG",
+        "Retrieval Precision": 0.5,
+        "Context Relevance": 0.7142857142857143,
+        "Answer Faithfulness": 0.14285714285714285,
+        "Answer Relevance": 0.0,
+        "Latency (s)": 6.378683099988848
+    },
+    {
+        "Query": "Q3",
+        "Method": "Baseline RAG",
+        "Retrieval Precision": 1.0,
+        "Context Relevance": 0.8,
+        "Answer Faithfulness": 0.14285714285714285,
+        "Answer Relevance": 0.0,
+        "Latency (s)": 6.274092399980873
+    },
+    {
+        "Query": "Q3",
+        "Method": "Adaptive RAG",
+        "Retrieval Precision": 0.8,
+        "Context Relevance": 1.0,
+        "Answer Faithfulness": 0.14285714285714285,
+        "Answer Relevance": 0.0,
+        "Latency (s)": 6.357049799989909
+    }
+]

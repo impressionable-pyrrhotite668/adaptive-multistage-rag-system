@@ -1,0 +1,146 @@
+# -------------------------------
+
+# 🐍 Python
+
+# -------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+
+.venv/
+venv/
+env/
+ENV/
+
+# Python packaging
+
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# -------------------------------
+
+# 🔐 Environment variables
+
+# -------------------------------
+
+.env
+.env.*
+*.env
+
+# -------------------------------
+
+# 📦 Model files (VERY IMPORTANT)
+
+# -------------------------------
+
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.gguf
+
+# Ollama / local LLM models
+
+ollama_models/
+models/
+
+# -------------------------------
+
+# 📊 Data files
+
+# -------------------------------
+
+data/
+datasets/
+*.csv
+*.jsonl
+*.parquet
+
+# Allow small config JSON if needed
+
+!config/*.json
+
+# -------------------------------
+
+# 🧠 Embeddings / Feature stores
+
+# -------------------------------
+
+*.pkl
+*.joblib
+*.npy
+.chroma/
+faiss_index/
+.qdrant/
+*.db
+*.sqlite3
+index_cache/
+
+# -------------------------------
+
+# 📝 Logs & outputs
+
+# -------------------------------
+
+logs/
+*.log
+outputs/
+results/
+
+# -------------------------------
+
+# 💻 Jupyter Notebook
+
+# -------------------------------
+
+.ipynb_checkpoints/
+
+# -------------------------------
+
+# 🧪 Testing / cache
+
+# -------------------------------
+
+.cache/
+.pytest_cache/
+
+# -------------------------------
+
+# 🖥️ OS-specific
+
+# -------------------------------
+
+.DS_Store
+Thumbs.db
+
+# -------------------------------
+
+# 🧰 IDEs
+
+# -------------------------------
+
+.vscode/
+.idea/
+
+# -------------------------------
+
+# 🔥 Temporary files
+
+# -------------------------------
+
+tmp/
+temp/
+*.tmp
+
+# -------------------------------
+
+# 🚀 Streamlit
+
+# -------------------------------
+
+.streamlit/secrets.toml
